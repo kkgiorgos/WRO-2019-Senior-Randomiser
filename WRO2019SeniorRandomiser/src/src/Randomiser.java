@@ -26,6 +26,28 @@ public class Randomiser {
 		return colors;
 	}
 	
+	public static int convertColorsToNumbers(Color colorsIn) {
+		int colors;
+			if(colorsIn==Color.RED)
+				colors = 0;
+			else if (colorsIn==Color.BLUE)
+				colors = 1;
+			else if (colorsIn==Color.GREEN)
+				colors = 2;
+			else
+				colors = 3;
+		return colors;
+	}
+	
+	public static int convertBlocksToNumbers(Color blocksIn) {
+		int blocks;
+			if(blocksIn==Color.WHITE)
+				blocks = 0;
+			else
+				blocks = 1;
+		return blocks;
+	}
+	
 	static Color[] convertBlocks (int blocksIn[]) {
 		Color blocks[] = new Color [6];
 		for (int i=0; i<6; i++) {

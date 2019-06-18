@@ -101,7 +101,6 @@ public class MainWindow {
 	 * @throws IOException 
 	 */
 	private void initialize() throws IOException {
-		Randomiser.ResetFile();
 		frmWroSenior = new JFrame();
 		frmWroSenior.setResizable(false);
 		frmWroSenior.setTitle("WRO 2019 Senior Randomiser");
@@ -162,7 +161,7 @@ public class MainWindow {
 		LabelCube4.setHorizontalAlignment(SwingConstants.CENTER);
 		LabelCube4.setFont(new Font("Calibri", Font.BOLD, 18));
 		
-		JButton RandomiseCubes = new JButton("Randomise Cubes!!!");
+		final JButton RandomiseCubes = new JButton("Randomise Cubes!!!");
 		RandomiseCubes.setBounds(180, 128, 190, 30);
 		Cube.add(RandomiseCubes);
 		RandomiseCubes.setBackground(new Color(105, 105, 105));
@@ -247,17 +246,36 @@ public class MainWindow {
 		LabelBlock1.setBounds(0, 455, 125, 40);
 		Blocks.add(LabelBlock1);
 		
-		JButton RandomiseBlocks = new JButton("Randomise Blocks!!!");
+		final JButton RandomiseBlocks = new JButton("Randomise Blocks!!!");
 		RandomiseBlocks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int blocksInts[] = Randomiser.intBlocks();
 				Color blocks[] = Randomiser.Blocks(blocksInts);
-				Block1.setBackground(blocks[0]);
-				Block2.setBackground(blocks[1]);
-				Block3.setBackground(blocks[2]);
-				Block4.setBackground(blocks[3]);
-				Block5.setBackground(blocks[4]);
-				Block6.setBackground(blocks[5]);
+				int colorsInts[] = new int[4];
+				colorsInts[0]=Randomiser.convertBlocksToNumbers(Cube1.getBackground());
+				colorsInts[1]=Randomiser.convertBlocksToNumbers(Cube2.getBackground());
+				colorsInts[2]=Randomiser.convertBlocksToNumbers(Cube3.getBackground());
+				colorsInts[3]=Randomiser.convertBlocksToNumbers(Cube4.getBackground());
+				try {
+					int caseCounter = 0;
+					do{
+						caseCounter++;
+						blocksInts = Randomiser.intBlocks();
+						if(caseCounter==15) {
+							RandomiseBlocks.setEnabled(false);
+							break;
+						}
+					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					Block1.setBackground(blocks[0]);
+					Block2.setBackground(blocks[1]);
+					Block3.setBackground(blocks[2]);
+					Block4.setBackground(blocks[3]);
+					Block5.setBackground(blocks[4]);
+					Block6.setBackground(blocks[5]);
+					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}		
 			}
 		});
 		RandomiseBlocks.setForeground(new Color(211, 211, 211));
@@ -266,7 +284,7 @@ public class MainWindow {
 		RandomiseBlocks.setBounds(66, 495, 190, 30);
 		Blocks.add(RandomiseBlocks);
 		
-		JButton btnRandomiseAll = new JButton("Randomise ALL !!!");
+		final JButton btnRandomiseAll = new JButton("Randomise ALL !!!");
 		btnRandomiseAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int colorsInts[] = Randomiser.intColors();
@@ -274,9 +292,15 @@ public class MainWindow {
 				Color[] colors = Randomiser.Colors(colorsInts);	
 				Color[] blocks = Randomiser.Blocks(blocksInts);
 				try {
+					int caseCounter=0;
 					do{
+						caseCounter++;
 						colorsInts = Randomiser.intColors();
 						blocksInts = Randomiser.intBlocks();
+						if(caseCounter==360) {
+							btnRandomiseAll.setEnabled(false);
+							break;	
+						}
 					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
 					
 					colors = Randomiser.Colors(colorsInts);
@@ -304,14 +328,55 @@ public class MainWindow {
 		btnRandomiseAll.setBackground(SystemColor.controlDkShadow);
 		btnRandomiseAll.setBounds(195, 25, 180, 30);
 		frmWroSenior.getContentPane().add(btnRandomiseAll);
+		
+		JButton ResetFile = new JButton("Reset File");
+		ResetFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Randomiser.ResetFile();
+					btnRandomiseAll.setEnabled(true);
+					RandomiseBlocks.setEnabled(true);
+					RandomiseCubes.setEnabled(true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		ResetFile.setForeground(new Color(211, 211, 211));
+		ResetFile.setFont(new Font("Calibri", Font.BOLD, 18));
+		ResetFile.setBackground(SystemColor.controlDkShadow);
+		ResetFile.setBounds(10, 25, 110, 30);
+		frmWroSenior.getContentPane().add(ResetFile);
 		RandomiseCubes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int colorsInts[] = Randomiser.intColors();
 				Color colors[] = Randomiser.Colors(colorsInts);
-				Cube1.setBackground(colors[0]);
-				Cube2.setBackground(colors[1]);
-				Cube3.setBackground(colors[2]);
-				Cube4.setBackground(colors[3]);
+				int blocksInts[] = new int[6];
+				blocksInts[0]=Randomiser.convertBlocksToNumbers(Block1.getBackground());
+				blocksInts[1]=Randomiser.convertBlocksToNumbers(Block2.getBackground());
+				blocksInts[2]=Randomiser.convertBlocksToNumbers(Block3.getBackground());
+				blocksInts[3]=Randomiser.convertBlocksToNumbers(Block4.getBackground());
+				blocksInts[4]=Randomiser.convertBlocksToNumbers(Block5.getBackground());
+				blocksInts[5]=Randomiser.convertBlocksToNumbers(Block6.getBackground());
+				try {
+					int caseCounter = 0;
+					do{
+						caseCounter++;
+						colorsInts = Randomiser.intColors();
+						if(caseCounter==24) {
+							RandomiseCubes.setEnabled(false);
+							break;
+						}
+					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					Cube1.setBackground(colors[0]);
+					Cube2.setBackground(colors[1]);
+					Cube3.setBackground(colors[2]);
+					Cube4.setBackground(colors[3]);
+					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}		
 			}
 		});
 		frmWroSenior.setBounds(100, 100, 574, 842);
