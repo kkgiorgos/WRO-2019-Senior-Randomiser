@@ -107,6 +107,13 @@ public class MainWindow {
 		frmWroSenior.getContentPane().setBackground(Color.GRAY);
 		frmWroSenior.getContentPane().setLayout(null);
 		
+		final JToggleButton tglbtnOffline = new JToggleButton("Offline");
+		tglbtnOffline.setForeground(new Color(211, 211, 211));
+		tglbtnOffline.setFont(new Font("Calibri", Font.BOLD, 18));
+		tglbtnOffline.setBackground(SystemColor.controlDkShadow);
+		tglbtnOffline.setBounds(468, 25, 90, 30);
+		frmWroSenior.getContentPane().add(tglbtnOffline);
+		
 		JPanel Cube = new JPanel();
 		Cube.setBackground(Color.GRAY);
 		Cube.setBounds(10, 80, 550, 165);
@@ -257,22 +264,25 @@ public class MainWindow {
 				colorsInts[2]=Randomiser.convertBlocksToNumbers(Cube3.getBackground());
 				colorsInts[3]=Randomiser.convertBlocksToNumbers(Cube4.getBackground());
 				try {
-					int caseCounter = 0;
-					do{
-						caseCounter++;
-						blocksInts = Randomiser.intBlocks();
-						if(caseCounter==15) {
-							RandomiseBlocks.setEnabled(false);
-							break;
-						}
-					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					if(!tglbtnOffline.isSelected()) {
+						int caseCounter = 0;
+						do{
+							caseCounter++;
+							blocksInts = Randomiser.intBlocks();
+							if(caseCounter==15) {
+								RandomiseBlocks.setEnabled(false);
+								break;
+							}
+						}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					}
 					Block1.setBackground(blocks[0]);
 					Block2.setBackground(blocks[1]);
 					Block3.setBackground(blocks[2]);
 					Block4.setBackground(blocks[3]);
 					Block5.setBackground(blocks[4]);
 					Block6.setBackground(blocks[5]);
-					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+					if(!tglbtnOffline.isSelected())
+						Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}		
@@ -292,17 +302,19 @@ public class MainWindow {
 				Color[] colors = Randomiser.Colors(colorsInts);	
 				Color[] blocks = Randomiser.Blocks(blocksInts);
 				try {
-					int caseCounter=0;
-					do{
-						caseCounter++;
-						colorsInts = Randomiser.intColors();
-						blocksInts = Randomiser.intBlocks();
-						if(caseCounter==360) {
-							btnRandomiseAll.setEnabled(false);
-							break;	
-						}
-					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
-					
+					if(!tglbtnOffline.isSelected()) 
+					{
+						int caseCounter=0;
+						do{
+							caseCounter++;
+							colorsInts = Randomiser.intColors();
+							blocksInts = Randomiser.intBlocks();
+							if(caseCounter==360) {
+								btnRandomiseAll.setEnabled(false);
+								break;	
+							}
+						}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					}
 					colors = Randomiser.Colors(colorsInts);
 					blocks = Randomiser.Blocks(blocksInts);
 					Cube1.setBackground(colors[0]);
@@ -315,7 +327,8 @@ public class MainWindow {
 					Block4.setBackground(blocks[3]);
 					Block5.setBackground(blocks[4]);
 					Block6.setBackground(blocks[5]);
-					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+					if(!tglbtnOffline.isSelected())
+						Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
 				} 
 				catch (IOException e1) 
 				{
@@ -348,6 +361,7 @@ public class MainWindow {
 		ResetFile.setBackground(SystemColor.controlDkShadow);
 		ResetFile.setBounds(10, 25, 110, 30);
 		frmWroSenior.getContentPane().add(ResetFile);
+		
 		RandomiseCubes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int colorsInts[] = Randomiser.intColors();
@@ -360,20 +374,23 @@ public class MainWindow {
 				blocksInts[4]=Randomiser.convertBlocksToNumbers(Block5.getBackground());
 				blocksInts[5]=Randomiser.convertBlocksToNumbers(Block6.getBackground());
 				try {
-					int caseCounter = 0;
-					do{
-						caseCounter++;
-						colorsInts = Randomiser.intColors();
-						if(caseCounter==24) {
-							RandomiseCubes.setEnabled(false);
-							break;
-						}
-					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					if(!tglbtnOffline.isSelected()) {
+						int caseCounter = 0;
+						do{
+							caseCounter++;
+							colorsInts = Randomiser.intColors();
+							if(caseCounter==24) {
+								RandomiseCubes.setEnabled(false);
+								break;
+							}
+						}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					}
 					Cube1.setBackground(colors[0]);
 					Cube2.setBackground(colors[1]);
 					Cube3.setBackground(colors[2]);
 					Cube4.setBackground(colors[3]);
-					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+					if(!tglbtnOffline.isSelected())
+						Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}		
