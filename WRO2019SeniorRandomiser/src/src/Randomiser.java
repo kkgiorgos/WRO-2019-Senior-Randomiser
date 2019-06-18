@@ -1,10 +1,14 @@
 package src;
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -117,17 +121,36 @@ public class Randomiser {
 	}
 	
 	public static boolean CheckFile(String drawID) throws IOException {
-		List<String> Draws = readFileInList("Draws.txt");
-		return Draws.contains(drawID);
+		String requestURL = "http://tettix.no-ip.org/wro2019/check_file.php?drawID=" + drawID;
+	    URL url = new URL(requestURL);
+		URLConnection connection = url.openConnection();
+		connection.connect();
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		
+		if(in.readLine()=="YES") {
+			in.close();
+			return true;
+		}	
+		else {
+			in.close();
+			return false;
+		}
 	}
 	
 	public static void WriteFile(String drawID) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new FileWriter("Draws.txt", true));
-	    writer.append(drawID + "\n");
-	    writer.close();
+	    String requestURL = "http://tettix.no-ip.org/wro2019/write_file.php?drawID=" + drawID;
+	    URL url = new URL(requestURL);
+		URLConnection connection = url.openConnection();
+		connection.connect();
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		in.close();
 	}
 	
 	public static void ResetFile() throws IOException {
-		new FileWriter("Draws.txt", false).close();
+		URL url = new URL("http://tettix.no-ip.org/wro2019/reset_file.php");
+		URLConnection connection = url.openConnection();
+		connection.connect();
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		in.close();
 	}
 }
