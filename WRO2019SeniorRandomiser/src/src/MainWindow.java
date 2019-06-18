@@ -10,6 +10,8 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+
 import javax.swing.JMenuItem;
 import java.awt.Canvas;
 import javax.swing.JPanel;
@@ -88,15 +90,18 @@ public class MainWindow {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
 	 */
-	public MainWindow() {
+	public MainWindow() throws IOException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws IOException 
 	 */
-	private void initialize() {
+	private void initialize() throws IOException {
+		Randomiser.ResetFile();
 		frmWroSenior = new JFrame();
 		frmWroSenior.setResizable(false);
 		frmWroSenior.setTitle("WRO 2019 Senior Randomiser");
@@ -175,15 +180,15 @@ public class MainWindow {
 		Block3.setBounds(0, 0, 125, 125);
 		Blocks.add(Block3);
 		
-		final JPanel Block4 = new JPanel();
-		Block4.setBackground(Color.DARK_GRAY);
-		Block4.setBounds(200, 0, 125, 125);
-		Blocks.add(Block4);
-		
 		final JPanel Block6 = new JPanel();
 		Block6.setBackground(Color.DARK_GRAY);
-		Block6.setBounds(200, 330, 125, 125);
+		Block6.setBounds(200, 0, 125, 125);
 		Blocks.add(Block6);
+		
+		final JPanel Block4 = new JPanel();
+		Block4.setBackground(Color.DARK_GRAY);
+		Block4.setBounds(200, 330, 125, 125);
+		Blocks.add(Block4);
 		
 		final JPanel Block5 = new JPanel();
 		Block5.setBackground(Color.DARK_GRAY);
@@ -245,7 +250,8 @@ public class MainWindow {
 		JButton RandomiseBlocks = new JButton("Randomise Blocks!!!");
 		RandomiseBlocks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Color blocks[] = Randomiser.Blocks();
+				int blocksInts[] = Randomiser.intBlocks();
+				Color blocks[] = Randomiser.Blocks(blocksInts);
 				Block1.setBackground(blocks[0]);
 				Block2.setBackground(blocks[1]);
 				Block3.setBackground(blocks[2]);
@@ -263,18 +269,34 @@ public class MainWindow {
 		JButton btnRandomiseAll = new JButton("Randomise ALL !!!");
 		btnRandomiseAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Color colors[] = Randomiser.Colors();
-				Cube1.setBackground(colors[0]);
-				Cube2.setBackground(colors[1]);
-				Cube3.setBackground(colors[2]);
-				Cube4.setBackground(colors[3]);
-				Color blocks[] = Randomiser.Blocks();
-				Block1.setBackground(blocks[0]);
-				Block2.setBackground(blocks[1]);
-				Block3.setBackground(blocks[2]);
-				Block4.setBackground(blocks[3]);
-				Block5.setBackground(blocks[4]);
-				Block6.setBackground(blocks[5]);
+				int colorsInts[] = Randomiser.intColors();
+				int blocksInts[] = Randomiser.intBlocks();
+				Color[] colors = Randomiser.Colors(colorsInts);	
+				Color[] blocks = Randomiser.Blocks(blocksInts);
+				try {
+					do{
+						colorsInts = Randomiser.intColors();
+						blocksInts = Randomiser.intBlocks();
+					}while(Randomiser.CheckFile(Randomiser.concatenate(colorsInts, blocksInts)));
+					
+					colors = Randomiser.Colors(colorsInts);
+					blocks = Randomiser.Blocks(blocksInts);
+					Cube1.setBackground(colors[0]);
+					Cube2.setBackground(colors[1]);
+					Cube3.setBackground(colors[2]);
+					Cube4.setBackground(colors[3]);	
+					Block1.setBackground(blocks[0]);
+					Block2.setBackground(blocks[1]);
+					Block3.setBackground(blocks[2]);
+					Block4.setBackground(blocks[3]);
+					Block5.setBackground(blocks[4]);
+					Block6.setBackground(blocks[5]);
+					Randomiser.WriteFile(Randomiser.concatenate(colorsInts, blocksInts));
+				} 
+				catch (IOException e1) 
+				{
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnRandomiseAll.setForeground(new Color(211, 211, 211));
@@ -284,7 +306,8 @@ public class MainWindow {
 		frmWroSenior.getContentPane().add(btnRandomiseAll);
 		RandomiseCubes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Color colors[] = Randomiser.Colors();
+				int colorsInts[] = Randomiser.intColors();
+				Color colors[] = Randomiser.Colors(colorsInts);
 				Cube1.setBackground(colors[0]);
 				Cube2.setBackground(colors[1]);
 				Cube3.setBackground(colors[2]);
